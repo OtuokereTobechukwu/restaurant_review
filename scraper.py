@@ -37,12 +37,13 @@ def fetchRestaurantDetails(parent):
         name = restaurant_details.find_element(by=By.CLASS_NAME, value='fHibz').text
         review = restaurant_details.find_element(by=By.CLASS_NAME, value='dUfZJ').text
         rating = restaurant_details.find_element(by=By.CLASS_NAME, value='fdsdx').text
-        comments = restaurant_details.find_element(by=By.CLASS_NAME, value='fdsdx')
+        comments_table = restaurant_details.find_element(by=By.XPATH, value='//*[@id="taplc_location_reviews_list_resp_rr_resp_0"]/div')
+        comments = comments_table.find_elements(by=By.CLASS_NAME, value = 'entry')
 
         # Fetch multiple comments for single restaurants
+        post_comments = []
         for comment in comments:
-            post_comments = []
-            post_comments.append(comment.find_element(by=By.CLASS_NAME, value='fdsdx').text)
+            post_comments.append(comment.find_element(by=By.CLASS_NAME, value='partial_entry').text)
 
         review_texts.append(post_comments)
         names.append(name)

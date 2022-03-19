@@ -11,22 +11,21 @@ driver = webdriver.Chrome(executable_path='/Users/Toby_Py/Documents/chromedriver
 # Open the url
 driver.get('https://www.tripadvisor.com/Restaurants-g304026-Lagos_Lagos_State.html')
 
+parent_table = driver.find_element(by=By.XPATH,value= '//*[@id="component_2"]/div')
+
 # Save the restaurant window
 def get_restaurant_window():
     restaurant_window = driver.window_handles[0]
     return restaurant_window
-# driver.switch_to.window()
 
-
-
-
+# Fetch Restaurant details
 def fetchRestaurantDetails(parent):
     names = []
     reviews = []
     ratings = []
 
     restaurant_list = parent.find_elements(by=By.CLASS_NAME, value = 'OhCyu')
-
+    # Loop through restaurants and extract details
     for restaurant in restaurant_list:
         ActionChains(driver).move_to_element(restaurant).key_down(Keys.COMMAND).click(restaurant).key_up(Keys.COMMAND).perform()
         driver.switch_to.window(driver.window_handles[1])
@@ -60,35 +59,4 @@ def transformToDataframe(details):
     data = pd.DataFrame.from_dict(restaurant_data)
 
     return data
-
-
-
-# Main Program
-# ----------------------------------------------------------------
-
-# Parent table with restaurant listings
-parent_table = driver.find_element(by=By.XPATH,value= '//*[@id="component_2"]/div')
-
-# Fetch the details of the restaurant
-details = fetchRestaurantDetails(parent_table)
-
-# Transform the details of the restaurant into a dataframe
-data = transformToDataframe(details)
-
-
-print(data)
-
-
-
-
-
-
-
-# print(restaurant_list)
-#     # Get name of restaurant
-#         # Restaurant name class attribute : 'OhCyu'
-#     # Click(go the the restataurant details) and get:
-#         # number of reviews -> <a class="dUfZJ" href="#REVIEWS">481 reviews</a>
-#         # Rating -> <span class="fdsdx">4.5<!-- -->&nbsp;</span>
-#         # Comments -> <p class="partial_entry">Awesome place with great ambience. 
 

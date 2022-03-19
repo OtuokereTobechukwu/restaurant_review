@@ -23,7 +23,7 @@ def fetchRestaurantDetails(parent):
     names = []
     reviews = []
     ratings = []
-
+    review_texts = []
     restaurant_list = parent.find_elements(by=By.CLASS_NAME, value = 'OhCyu')
     # Loop through restaurants and extract details
     for restaurant in restaurant_list:
@@ -37,16 +37,14 @@ def fetchRestaurantDetails(parent):
         name = restaurant_details.find_element(by=By.CLASS_NAME, value='fHibz').text
         review = restaurant_details.find_element(by=By.CLASS_NAME, value='dUfZJ').text
         rating = restaurant_details.find_element(by=By.CLASS_NAME, value='fdsdx').text
-        comments = restaurant_details.find_element(by=By.CLASS_NAME, value='fdsdx').text
+        comments = restaurant_details.find_element(by=By.CLASS_NAME, value='fdsdx')
 
         # Fetch multiple comments for single restaurants
         for comment in comments:
             post_comments = []
-            post_comments.append(comment)
+            post_comments.append(comment.find_element(by=By.CLASS_NAME, value='fdsdx').text)
 
-        # To do
-        # Fetch multiple comments for single restaurants
-
+        review_texts.append(post_comments)
         names.append(name)
         reviews.append(review)
         ratings.append(rating)
@@ -54,16 +52,17 @@ def fetchRestaurantDetails(parent):
         driver.close()
         driver.switch_to.window(get_restaurant_window())
 
-    return names, reviews, ratings
+    return names, reviews, ratings, review_texts
 
 
 def transformToDataframe(details):
-    names,review,ratings = details
-    restaurant_data = {'name':[], 'reviews':[], 'ratings':[]}
+    names,review,ratings,review_texts = details
+    restaurant_data = {'name':[], 'reviews':[], 'ratings':[], 'review_texts':[]}
 
     restaurant_data['name'] = names
     restaurant_data['reviews'] = review
     restaurant_data['ratings'] = ratings
+    restaurant_data['review_texts'] = review_texts
 
     data = pd.DataFrame.from_dict(restaurant_data)
 
